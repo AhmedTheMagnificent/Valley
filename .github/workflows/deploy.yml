@@ -1,10 +1,10 @@
-name: Deploy
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - main
-    
+      - main  # Or 'master' if you use that
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -22,9 +22,9 @@ jobs:
         run: npm install
 
       - name: Build project
-        run: npm run dev
+        run: npm run build
 
-      - name: Deploy on Github Pages
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
