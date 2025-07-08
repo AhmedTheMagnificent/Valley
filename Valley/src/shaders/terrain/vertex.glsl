@@ -74,15 +74,31 @@ float cnoise(vec3 P){
 }
 
 varying float vElevation;
+uniform float uTime;
+
+float getElevation(vec3 _position){
+    float elevation = 0.0;
+
+    // General elevation
+    elevation += cnoise(vec3(
+        _position.xz * 0.3,
+        uTime
+    )) * 0.5;
+
+    // Smaller Details
+    elevation += cnoise(vec3(
+        (_position.xz + 123.0) * 1.0,
+        uTime 
+    )) * 0.2;
+
+    elevation *= 2.0;
+    return elevation;
+}
 
 void main(){
     vec4 modelPosition = modelMatrix * vec4(position, 1.0);
 
-    float elevation = cnoise(vec3(
-        modelPosition.x,
-        modelPosition.z,
-        0.0
-    ));
+    float elevation = getElevation(modelPosition.xyz);
 
     modelPosition.y += elevation;
 
