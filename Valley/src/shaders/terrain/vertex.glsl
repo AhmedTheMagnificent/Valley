@@ -75,20 +75,24 @@ float cnoise(vec3 P){
 
 varying float vElevation;
 uniform float uTime;
+varying vec2 vUv;
 
 float getElevation(vec3 _position){
     float elevation = 0.0;
+    vec3 position = _position;
+    position.x += uTime * 0.3;
+    position.y += uTime * 0.1;
 
     // General elevation
     elevation += cnoise(vec3(
-        _position.xz * 0.3,
-        uTime
+        position.xz * 0.3,
+        0.0
     )) * 0.5;
 
     // Smaller Details
     elevation += cnoise(vec3(
-        (_position.xz + 123.0) * 1.0,
-        uTime 
+        (position.xz + 123.0) * 1.0,
+        0.0
     )) * 0.2;
 
     elevation *= 2.0;
@@ -107,4 +111,5 @@ void main(){
     gl_Position = projectionPosition;
 
     vElevation = elevation;
+    vUv = uv;
 }

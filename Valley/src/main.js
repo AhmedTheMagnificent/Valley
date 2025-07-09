@@ -3,11 +3,13 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import terrainVertexShader from "./shaders/terrain/vertex.glsl?raw";
 import terrainFragmentShader from "./shaders/terrain/fragment.glsl?raw";
+import terrainDepthVertexShader from "./shaders/terrainDepth/vertex.glsl?raw";
+import terrainDepthFragmentShader from "./shaders/terrainDepth/fragment.glsl?raw";
 import { Pane } from 'tweakpane';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { BokehPass } from 'three/examples/jsm/postprocessing/BokehPass.js';
-
+// import { BokehPass } from 'three/examples/jsm/postprocessing/BokehPass.js';
+import { BokehPass } from './passes/BokehPass';
 
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
@@ -110,6 +112,7 @@ terrain.texture.update = () => {
 
   for (let i = 0; i < smallLinesCount; i++) {
     terrain.texture.context.globalAlpha = terrain.texture.smallLineAlpha;
+    terrain.texture.context.fillStyle = "#00ffff";
     terrain.texture.context.fillRect(
       0,
       Math.round(terrain.texture.height / terrain.texture.linesCount) * (i + 1),
@@ -173,9 +176,6 @@ terrain.material = new THREE.ShaderMaterial({
     uTime: { value: 0 }
   }
 })
-terrain.mesh = new THREE.Mesh(terrain.geometry, terrain.material);
-terrain.mesh.scale.set(10, 10, 10);
-scene.add(terrain.mesh);
 
 // debug
 const terrainMaterialPane = terrainPane.addFolder({
@@ -194,10 +194,39 @@ terrainMaterialPane.addBinding(terrain.material.uniforms.uTextureofFrequency, "v
   label: "uTextureofFrequency"
 });
 
+// Depth material
+const uniforms = THREE.UniformsUtils.merge([
+  THREE.UniformsLib.common,
+  THREE.UniformsLib.displacementmap
+]);
+terrain.depthMaterial = new THREE.ShaderMaterial({
+  vertexShader: terrainDepthVertexShader,
+  fragmentShader: terrainDepthFragmentShader,
+  uniforms: uniforms
+});
+terrain.depthMaterial.depthPacking = THREE.RGBADepthPacking;
+terrain.depthMaterial.blending = THREE.NoBlending;
+terrain.depthMaterial.morphTargets = false;
+terrain.depthMaterial.map = null;
+terrain.depthMaterial.alphaMap = null;
+terrain.depthMaterial.displacementMap = null;
+terrain.depthMaterial.displacementScale = 1;
+terrain.depthMaterial.displacementBias = 0;
+terrain.depthMaterial.wireframe = false;
+terrain.depthMaterial.wireframeLinewidth = 1;
+terrain.depthMaterial.fog = false;
+
+terrain.depthMaterial.depthPacking
+
+// Mesh
+terrain.mesh = new THREE.Mesh(terrain.geometry, terrain.material);
+terrain.mesh.scale.set(10, 10, 10);
+scene.add(terrain.mesh);
+
 // Renderer
 const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
-  antialias: true
+  // antialias: true
 });
 
 renderer.setClearColor(0x111111, 1);
@@ -232,6 +261,7 @@ const bokehPass = new BokehPass(
     height: sizes.height * sizes.pixelRatio
   }
 );
+bokehPass.enabled = true;
 effectComposer.addPass(bokehPass);
 
 const bokehPassPane = pane.addFolder({
