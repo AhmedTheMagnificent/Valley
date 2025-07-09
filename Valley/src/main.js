@@ -74,7 +74,7 @@ window.addEventListener("resize", () => {
 const terrain = {};
 terrain.texture = {};
 terrain.texture.linesCount = 5;
-terrain.texture.bigLineWidth = 0.04;
+terrain.texture.bigLineWidth = 0.08;
 terrain.texture.smallLineWidth = 0.01;
 terrain.texture.smallLineAlpha = 0.5;
 terrain.texture.width = 32;
@@ -112,7 +112,7 @@ terrain.texture.update = () => {
 
   for (let i = 0; i < smallLinesCount; i++) {
     terrain.texture.context.globalAlpha = terrain.texture.smallLineAlpha;
-    terrain.texture.context.fillStyle = "#00ffff";
+    terrain.texture.context.fillStyle = "#ffffff";
     terrain.texture.context.fillRect(
       0,
       Math.round(terrain.texture.height / terrain.texture.linesCount) * (i + 1),
@@ -142,7 +142,7 @@ terrainTexturePane.addBinding(terrain.texture, "linesCount", {
 
 terrainTexturePane.addBinding(terrain.texture, "bigLineWidth", {
   min: 0,
-  max: 0.1,
+  max: 0.5,
   step: 0.001,
   label: "Big Line Width"
 }).on("change", () => terrain.texture.update());
@@ -172,8 +172,22 @@ terrain.material = new THREE.ShaderMaterial({
   uniforms: {
     uTexture: { value: terrain.texture.instance },
     uElevation: { value: 2 },
-    uTextureofFrequency: { value: 10 },
-    uTime: { value: 0 }
+    uElevationValley: { value: 0.4 },
+    uElevationValleyFrequency: { value: 1.5 },
+    uElevationGeneral: { value: 0.2 },
+    uElevationGeneralFrequency: { value: 0.2 },
+    uElevationDetails: { value: 0.2 },
+    uElevationDetailsFrequency: { value: 2.012 },
+    uTextureFrequency: { value: 10 },
+    uTextureOffset: { value: 0.585 },
+    uTime: { value: 0 },
+    uHslHue: { value: 1.0 },
+    uHslHueOffset: { value: 0.0 },
+    uHslHueFrequency: { value: 10.0 },
+    uHslTimeFrequency: { value: 0.05 },
+    uHslLightness: { value: 0.75 },
+    uHslLightnessVariation: { value: 0.25 },
+    uHslLightnessFrequency: { value: 20.0 }
   }
 })
 
@@ -187,12 +201,49 @@ terrainMaterialPane.addBinding(terrain.material.uniforms.uElevation, "value", {
   step: 0.001,
   label: "uElevation"
 });
-terrainMaterialPane.addBinding(terrain.material.uniforms.uTextureofFrequency, "value", {
+terrainMaterialPane.addBinding(terrain.material.uniforms.uTextureFrequency, "value", {
   min: 0.01,
   max: 100,
   step: 0.01,
-  label: "uTextureofFrequency"
+  label: "uTextureFrequency"
 });
+terrainMaterialPane.addBinding(terrain.material.uniforms.uHslHue, "value", {
+  min: 0,
+  max: 1,
+  step: 0.001,
+  label: "uHslHue"
+});
+terrainMaterialPane.addBinding(terrain.material.uniforms.uHslHueOffset, "value", {
+  min: 0,
+  max: 1,
+  step: 0.001,
+  label: "uHslHueOffset"
+});
+terrainMaterialPane.addBinding(terrain.material.uniforms.uHslHueFrequency, "value", {
+  min: 0,
+  max: 200,
+  step: 0.01,
+  label: "uHslHueFrequency"
+});
+terrainMaterialPane.addBinding(terrain.material.uniforms.uHslLightness, "value", {
+  min: 0,
+  max: 1,
+  step: 0.001,
+  label: "uHslLightness"
+});
+terrainMaterialPane.addBinding(terrain.material.uniforms.uHslLightnessVariation, "value", {
+  min: 0,
+  max: 1,
+  step: 0.001,
+  label: "uHslLightnessVariation"
+});
+terrainMaterialPane.addBinding(terrain.material.uniforms.uHslLightnessFrequency, "value", {
+  min: 0.0,
+  max: 50,
+  step: 0.01,
+  label: "uHslLightnessFrequency"
+});
+
 
 // Depth material
 const uniforms = THREE.UniformsUtils.merge([
