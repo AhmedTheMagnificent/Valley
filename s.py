@@ -1,17 +1,11 @@
-def combinationSum(candidates, target):
-    if target == 0:
-        return []
-    if target < 0:
-        return None
-    for num in candidates:
-        rem = target - num
-        combination = combinationSum(candidates, rem)
-        if combination is not None:
-            combination.append(num)
-        return combination
+def sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and arr[j] > key:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+    return arr
 
-candidates = [2,3,5]
-target = 8
-print(combinationSum(candidates, target))
-
-
+print(sort([6,3,5,1,8,7]))
