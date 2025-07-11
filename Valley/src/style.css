@@ -1,3 +1,13 @@
+@font-face
+{
+    font-family: 'Ailerons';
+    src: url('./fonts/subset-Ailerons-Regular.woff2') format('woff2'),
+        url('./fonts/subset-Ailerons-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -15,3 +25,38 @@ body {
   left: 0;
   outline: none;
 }
+
+#pane-container {
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 10;
+  max-height: 100vh;
+  overflow-y: auto;
+  width: 300px;
+}
+
+#pane-container.hidden {
+  display: none;
+}
+
+*::selection{
+  color: #aaaaaa;
+}
+
+.title {
+  position: absolute;
+  top: calc(50% - 5vh);
+  left: 0;
+  width: 100%;
+  color: #ffffff;
+  font-size: 14vh;
+  text-transform: uppercase;
+  text-align: center;
+  outline: none;
+  font-family: 'Ailerons', Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  -webkit-font-smooting: antialiased;
+  -moz-osx-font-smooting: grayscale;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
+}   

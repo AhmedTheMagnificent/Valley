@@ -12,7 +12,7 @@
     "vite": "^7.0.0"
   },
   "dependencies": {
-    "guify": "^0.15.1",
+    "gsap": "^3.13.0",
     "three": "^0.178.0",
     "tweakpane": "^4.0.5"
   }
